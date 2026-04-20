@@ -1,0 +1,151 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define FILE_NAME "students.txt"
+
+struct Student {
+    int roll_no;
+    char name[50];
+    int marks;
+    char grade;
+};
+
+// Compute the grade based on marks
+char calculate_grade(int marks) {
+    if (marks >= 90) return 'A';
+    if (marks >= 75) return 'B';
+    if (marks >= 60) return 'C';
+    if (marks >= 50) return 'D';
+    return 'F';
+}
+
+// Add a new student to the file
+void add_student() {
+    FILE *fp = fopen(FILE_NAME, "a");
+    struct Student s;
+
+    printf("Enter Roll Number: ");
+    scanf("%d", &s.roll_no);
+    printf("Enter Name: ");
+    scanf(" %[^\n]%*c", s.name); // read string with spaces
+    printf("Enter Marks: ");
+    scanf("%d", &s.marks);
+    s.grade = calculate_grade(s.marks);
+
+    fprintf(fp, "%d,%s,%d,%c\n", s.roll_no, s.name, s.marks, s.grade);
+    fclose(fp);
+
+    printf("Student added successfully!\n");
+}
+
+// Display all students
+void display_students() {
+    FILE *fp = fopen(FILE_NAME, "r");
+    struct Student s;
+
+    printf("\n%-10s %-20s %-8s %-5s\n", "Roll No", "Name", "Marks", "Grade");
+    printf("-----------------------------------------------\n");
+
+    while (fscanf(fp, "%d,%49[^,],%d,%c\n", &s.roll_no, s.name, &s.marks, &s.grade) == 4) {
+        printf("%-10d %-20s %-8d %-5c\n", s.roll_no, s.name, s.marks, s.grade);
+    }
+    fclose(fp);
+}
+
+// Update a student's details by roll number
+void update_student() {
+    int roll, found = 0;
+    printf("Enter Roll Number to Update: ");
+    scanf("%d", &roll);
+
+    FILE *fp = fopen(FILE_NAME, "r");
+    FILE *temp = fopen("temp.txt", "w");
+    struct Student s;
+
+    while (fscanf(fp, "%d,%49[^,],%d,%c\n", &s.roll_no, s.name, &s.marks, &s.grade) == 4) {
+        if (s.roll_no == roll) {
+            found = 1;
+            printf("Enter New Name: ");
+            scanf(" %[^\n]%*c", s.name);
+            printf("Enter New Marks: ");
+            scanf("%d", &s.marks);
+            s.grade = calculate_grade(s.marks);
+            printf("Student updated successfully!\n");
+        }
+        fprintf(temp, "%d,%s,%d,%c\n", s.roll_no, s.name, s.marks, s.grade);
+    }
+    fclose(fp);
+    fclose(temp);
+
+    remove(FILE_NAME);
+    rename("temp.txt", FILE_NAME);
+
+    if (!found)
+        printf("Student not found.\n");
+}
+
+// Delete a student record by roll number
+void delete_student() {
+    int roll, found = 0;
+    printf("Enter Roll Number to Delete: ");
+    scanf("%d", &roll);
+
+    FILE *fp = fopen(FILE_NAME, "r");
+    FILE *temp = fopen("temp.txt", "w");
+    struct Student s;
+
+    while (fscanf(fp, "%d,%49[^,],%d,%c\n", &s.roll_no, s.name, &s.marks, &s.grade) == 4) {
+        if (s.roll_no == roll) {
+            found = 1;
+            continue; // skip this student (delete)
+        }
+        fprintf(temp, "%d,%s,%d,%c\n", s.roll_no, s.name, s.marks, s.grade);
+    }
+    fclose(fp);
+    fclose(temp);
+
+    remove(FILE_NAME);
+    rename("temp.txt", FILE_NAME);
+
+    if (found)
+        printf("Student deleted successfully!\n");
+    else
+        printf("Student not found.\n");
+}
+
+int main() {
+    int choice;
+    while (1) {
+        printf("\n=== Student Management System ===\n");
+        printf("1. Add Student\n");
+        printf("2. Display All Students\n");
+        printf("3. Update Student\n");
+        printf("4. Delete Student\n");
+        printf("5. Exit\n");
+        printf("Enter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+        case 1:
+            add_student();
+            break;
+        case 2:
+            display_students();
+            break;
+        case 3:
+            update_student();
+            break;
+        case 4:
+            delete_student();
+            break;
+        case 5:
+            printf("Exiting...\n");
+            exit(0);
+        default:
+            printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
