@@ -31,5 +31,7 @@ This project is a simple system to manage student records. It allows users to ad
 
 ## 👨‍💻 Author
 syed abdullah shah jaffery 
+
 jawad 
+
 waqar
