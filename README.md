@@ -22,7 +22,7 @@ This project is a simple system to manage student records. It allows users to ad
    ./sms
 
 ## 📊 Example Output
-(Add screenshot here)
+
 
 ## 📂 Project Structure
 - main.c
@@ -30,4 +30,6 @@ This project is a simple system to manage student records. It allows users to ad
 - data.txt
 
 ## 👨‍💻 Author
-Your Name
+syed abdullah shah jaffery 
+jawad 
+waqar
