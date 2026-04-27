@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Learning</title>
+</head>
+<body>
+
+<h1>Courses</h1>
+<ul id="courses"></ul>
+
+<script>
+async function loadCourses() {
+    const res = await fetch("http://localhost:5000/api/courses");
+    const data = await res.json();
+
+    const list = document.getElementById("courses");
+    data.forEach(course => {
+        const li = document.createElement("li");
+        li.innerText = course.title + " - " + course.instructor;
+        list.appendChild(li);
+    });
+}
+
+loadCourses();
+</script>
+
+</body>
+</html>
